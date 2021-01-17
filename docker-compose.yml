@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+    web:
+        container_name: django_template_app
+        build: .
+        environment:
+            DB: postgres
+            DB_HOST: db
+            DB_PORT: 5432
+            DB_NAME: db_name_template
+            DB_USER: db_user_template
+            DB_PASS: db_pass_template
+        ports:
+            - 8000:8000
+        volumes:
+            - $PWD/:/opt/django_template_app
+        depends_on:
+            - db
+        command: 
+            sh -c "python manage.py runserver 0.0.0.0:8000"
+    db:
+        container_name: postgres
+        image: postgres:12.5-alpine
+        environment:
+            POSTGRES_USER: db_user_template
+            POSTGRES_PASSWORD: db_pass_template
+            POSTGRES_DB: db_name_template
+            POSTGRES_PORT: 5432
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/posgresql/data/
+
+volumes:
+    postgres_data:
